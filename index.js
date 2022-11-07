@@ -1,7 +1,9 @@
 const inquirer = require("inquirer");
 const fs = require("fs");
-const express = express;
+const express = require("express");
 const path = require("path");
+const teamMember = [];
+const Manager = require("./lib/Manager.js");
 
 // inquirer;
 // const choices = () => {
@@ -65,7 +67,7 @@ const path = require("path");
 //   })
 // };
 
-const promptMenu = () => {
+function promptMenu() {
   return inquirer
     .prompt([
       {
@@ -91,7 +93,7 @@ const promptMenu = () => {
           buildTeam();
       }
     });
-};
+}
 
 const promptEngineer = () => {
   console.log(`
@@ -164,7 +166,7 @@ const promptEngineer = () => {
         answers.gitHub
       );
       teamMember.push(engineer);
-      promptMenu;
+      promptMenu();
     });
 };
 const promptIntern = () => {
@@ -217,13 +219,13 @@ const promptIntern = () => {
       },
       {
         type: "input",
-        name: "GitHub",
-        message: "What is your github ?",
-        validate: (gitHub) => {
-          if (gitHub) {
+        name: "school",
+        message: "Where do you go to school?",
+        validate: (school) => {
+          if (school) {
             return true;
           } else {
-            console.log("Please enter your GitHub!");
+            console.log("Please enter your School!");
             return false;
           }
         },
@@ -231,13 +233,82 @@ const promptIntern = () => {
     ])
     .then((answers) => {
       console.log(answers);
-      const intern = new Intern(
-        answer.name,
-        answers.employeeID,
-        answers.emailAddress,
-        answers.gitHub
-      );
+      const intern = new Intern(answers.role, answers.school);
       teamMember.push(intern);
+      promptMenu();
+    });
+};
+const promptManager = () => {
+  console.log(`
+    ==================
+    Add a New Manager
+    ==================
+    `);
+
+  return inquirer
+    .prompt([
+      {
+        type: "input",
+        name: "name",
+        message: "What is the what team do you manage?",
+        validate: (manager) => {
+          if (manager) {
+            return true;
+          } else {
+            console.log("Please enter the name of the Team name!");
+            return false;
+          }
+        },
+      },
+      {
+        type: "input",
+        name: "employeeID",
+        message: "What is your employee ID?",
+        validate: (employeeID) => {
+          if (employeeID) {
+            return true;
+          } else {
+            console.log("Please enter your employee ID!");
+            return false;
+          }
+        },
+      },
+      {
+        type: "input",
+        name: "email",
+        message: "What is your email address?",
+        validate: (emailAddress) => {
+          if (emailAddress) {
+            return true;
+          } else {
+            console.log("Please enter your email address!");
+            return false;
+          }
+        },
+      },
+      {
+        type: "input",
+        name: "school",
+        message: "Where do you go to school?",
+        validate: (school) => {
+          if (school) {
+            return true;
+          } else {
+            console.log("Please enter your School!");
+            return false;
+          }
+        },
+      },
+    ])
+    .then((answers) => {
+      console.log(answers);
+      const manager = new Manager(
+        answer.role,
+        answers.officeNumber,
+        answers.employeeID,
+        answers.emailAddress
+      );
+      teamMember.push(manager);
       promptMenu();
     });
 };
@@ -248,10 +319,12 @@ const buildTeam = () => {
         Building My Team!
         =================
         `);
-  if (!fs.existsSync(OUTPUT_DIR)) {
-    fs.mkdirSync(OUTPUT_DIR);
-  }
-  fs.writeFileSync(outputPath, generateSite(teamMember));
 };
-
+const createHTML = () => {
+  promptUser()
+    // Use writeFileSync method to use promises instead of a callback function
+    .then((answers) => fs.writeFileSync("index.html", generateHTML(answers)))
+    .then(() => console.log("Successfully wrote to index.html"))
+    .catch((err) => console.error(err));
+};
 promptManager();
