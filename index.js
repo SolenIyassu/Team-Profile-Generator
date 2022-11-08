@@ -4,6 +4,8 @@ const express = require("express");
 const path = require("path");
 const teamMember = [];
 const Manager = require("./lib/Manager.js");
+const Engineer = require("./lib/Engineer");
+const Intern = require("./lib/Intern");
 
 // inquirer;
 // const choices = () => {
@@ -108,8 +110,8 @@ const promptEngineer = () => {
         type: "input",
         name: "name",
         message: "What is the name of engineer?",
-        validate: (engineerName) => {
-          if (engineerName) {
+        validate: (engineer) => {
+          if (engineer) {
             return true;
           } else {
             console.log("Please enter the name of the Engineer!");
@@ -160,7 +162,7 @@ const promptEngineer = () => {
     .then((answers) => {
       console.log(answers);
       const engineer = new Engineer(
-        answer.name,
+        answers.role,
         answers.employeeID,
         answers.emailAddress,
         answers.gitHub
@@ -191,19 +193,19 @@ const promptIntern = () => {
           }
         },
       },
-      {
-        type: "input",
-        name: "employeeID",
-        message: "What is your employee ID?",
-        validate: (employeeID) => {
-          if (employeeID) {
-            return true;
-          } else {
-            console.log("Please enter your employee ID!");
-            return false;
-          }
-        },
-      },
+      // {
+      //   type: "input",
+      //   name: "employeeID",
+      //   message: "What is your employee ID?",
+      //   validate: (employeeID) => {
+      //     if (employeeID) {
+      //       return true;
+      //     } else {
+      //       console.log("Please enter your employee ID!");
+      //       return false;
+      //     }
+      //   },
+      // },
       {
         type: "input",
         name: "email",
@@ -286,24 +288,24 @@ const promptManager = () => {
           }
         },
       },
-      {
-        type: "input",
-        name: "school",
-        message: "Where do you go to school?",
-        validate: (school) => {
-          if (school) {
-            return true;
-          } else {
-            console.log("Please enter your School!");
-            return false;
-          }
-        },
-      },
+      // {
+      //   type: "input",
+      //   name: "school",
+      //   message: "Where do you go to school?",
+      //   validate: (school) => {
+      //     if (school) {
+      //       return true;
+      //     } else {
+      //       console.log("Please enter your School!");
+      //       return false;
+      //     }
+      //   },
+      // },
     ])
     .then((answers) => {
       console.log(answers);
       const manager = new Manager(
-        answer.role,
+        answers.role,
         answers.officeNumber,
         answers.employeeID,
         answers.emailAddress
@@ -315,16 +317,27 @@ const promptManager = () => {
 
 const buildTeam = () => {
   console.log(`
-        =================
-        Building My Team!
-        =================
-        `);
+  =================
+  Completed in Building My Team!
+  =================
+  `);
+  function writeFile(fileName, data) {
+    fs.writeFile(fileName, generateHTML(answers), (error) => {
+      if (error) {
+        console.log(error);
+      }
+      console.log("team.html successfully generated");
+    });
+  }
+  // generateHtml = () => {
+  //   const allTeamMembers = JSON.stringify(team);
+  //   fs.writeFile("team.html", allTeamMembers, "utf-8", (error) => {
+  //     if (error) {
+  //       console.log(error);
 };
-const createHTML = () => {
-  promptUser()
-    // Use writeFileSync method to use promises instead of a callback function
-    .then((answers) => fs.writeFileSync("index.html", generateHTML(answers)))
-    .then(() => console.log("Successfully wrote to index.html"))
-    .catch((err) => console.error(err));
-};
+//     } else {
+//       console.log("team written into HTML");
+//     }
+//   });
+// };
 promptManager();
